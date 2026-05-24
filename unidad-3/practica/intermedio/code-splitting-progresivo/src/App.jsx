@@ -1,5 +1,5 @@
-import { lazy, Suspense, useMemo, useState } from 'react';
-import { OverviewView } from './views/OverviewView';
+import { lazy, Suspense, useState } from 'react';
+import OverviewView from './views/OverviewView';
 
 const ReportsView = lazy(() => import('./views/ReportsView'));
 const AuditView = lazy(() => import('./views/AuditView'));
@@ -12,8 +12,7 @@ const tabs = {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('overview');
-
-  const ActiveView = useMemo(() => tabs[activeTab], [activeTab]);
+  const ActiveView = tabs[activeTab];
 
   return (
     <main>

@@ -1,4 +1,4 @@
-export function OverviewView() {
+export default function OverviewView() {
   return (
     <section>
       <h2>Resumen ejecutivo</h2>
