@@ -36,6 +36,47 @@ Tabs.Trigger = function TabsTrigger({ children, value }) {
   const triggerId = `tab-${value}`;
   const panelId = `panel-${value}`;
 
+  const handleKeyDown = (event) => {
+    const tabList = event.currentTarget.closest('[role="tablist"]');
+    const tabs = tabList ? Array.from(tabList.querySelectorAll('[role="tab"]')) : [];
+    const currentIndex = tabs.indexOf(event.currentTarget);
+
+    if (currentIndex === -1 || tabs.length === 0) {
+      return;
+    }
+
+    const focusTab = (index) => {
+      const nextTab = tabs[index];
+
+      if (!nextTab) {
+        return;
+      }
+
+      nextTab.focus();
+      nextTab.click();
+    };
+
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      focusTab((currentIndex + 1) % tabs.length);
+    }
+
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      focusTab((currentIndex - 1 + tabs.length) % tabs.length);
+    }
+
+    if (event.key === 'Home') {
+      event.preventDefault();
+      focusTab(0);
+    }
+
+    if (event.key === 'End') {
+      event.preventDefault();
+      focusTab(tabs.length - 1);
+    }
+  };
+
   return (
     <button
       type="button"
@@ -44,6 +85,7 @@ Tabs.Trigger = function TabsTrigger({ children, value }) {
       aria-selected={selectedValue === value}
       aria-controls={panelId}
       tabIndex={selectedValue === value ? 0 : -1}
+      onKeyDown={handleKeyDown}
       onClick={() => setSelectedValue(value)}
     >
       {children}

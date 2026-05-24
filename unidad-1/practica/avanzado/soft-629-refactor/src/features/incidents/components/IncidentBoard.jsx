@@ -5,14 +5,19 @@ import { getIncidents } from '../services/incidentRepository';
 const incidents = getIncidents();
 
 export function IncidentBoard() {
+  const statusSelectId = 'incident-status';
   const [status, setStatus] = useState('all');
   const filteredIncidents = useIncidentFilters(incidents, status);
 
   return (
     <section>
-      <label>
+      <label htmlFor={statusSelectId}>
         Estado
-        <select value={status} onChange={(event) => setStatus(event.target.value)}>
+        <select
+          id={statusSelectId}
+          value={status}
+          onChange={(event) => setStatus(event.target.value)}
+        >
           <option value="all">Todos</option>
           <option value="open">Abiertos</option>
           <option value="resolved">Resueltos</option>
