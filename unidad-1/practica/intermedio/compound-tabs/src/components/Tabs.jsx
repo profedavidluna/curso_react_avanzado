@@ -23,17 +23,26 @@ export function Tabs({ children, defaultValue }) {
   return <TabsContext.Provider value={contextValue}>{children}</TabsContext.Provider>;
 }
 
-Tabs.List = function TabsList({ children }) {
-  return <div role="tablist">{children}</div>;
+Tabs.List = function TabsList({ children, label = 'Navegación de pestañas' }) {
+  return (
+    <div role="tablist" aria-label={label}>
+      {children}
+    </div>
+  );
 };
 
 Tabs.Trigger = function TabsTrigger({ children, value }) {
   const { selectedValue, setSelectedValue } = useTabsContext();
+  const triggerId = `tab-${value}`;
+  const panelId = `panel-${value}`;
 
   return (
     <button
       type="button"
-      aria-pressed={selectedValue === value}
+      role="tab"
+      id={triggerId}
+      aria-selected={selectedValue === value}
+      aria-controls={panelId}
       onClick={() => setSelectedValue(value)}
     >
       {children}
@@ -43,10 +52,16 @@ Tabs.Trigger = function TabsTrigger({ children, value }) {
 
 Tabs.Panel = function TabsPanel({ children, value }) {
   const { selectedValue } = useTabsContext();
+  const triggerId = `tab-${value}`;
+  const panelId = `panel-${value}`;
 
   if (selectedValue !== value) {
     return null;
   }
 
-  return <section>{children}</section>;
+  return (
+    <section role="tabpanel" id={panelId} aria-labelledby={triggerId}>
+      {children}
+    </section>
+  );
 };
