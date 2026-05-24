@@ -1,4 +1,7 @@
 export function CourseFilters({ filters, onChange }) {
+  const searchInputId = 'course-search';
+  const levelSelectId = 'course-level';
+
   const handleFieldChange = (field, value) => {
     onChange((currentFilters) => ({
       ...currentFilters,
@@ -9,17 +12,20 @@ export function CourseFilters({ filters, onChange }) {
   return (
     <section>
       <h2>Filtros</h2>
-      <label>
+      <label htmlFor={searchInputId}>
         Buscar curso
         <input
+          id={searchInputId}
+          type="text"
           value={filters.search}
           onChange={(event) => handleFieldChange('search', event.target.value)}
         />
       </label>
 
-      <label>
+      <label htmlFor={levelSelectId}>
         Nivel
         <select
+          id={levelSelectId}
           value={filters.level}
           onChange={(event) => handleFieldChange('level', event.target.value)}
         >

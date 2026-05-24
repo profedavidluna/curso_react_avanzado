@@ -41,7 +41,7 @@ Tabs.Trigger = function TabsTrigger({ children, value }) {
       type="button"
       role="tab"
       id={triggerId}
-      aria-selected={selectedValue === value ? 'true' : 'false'}
+      aria-selected={selectedValue === value}
       aria-controls={panelId}
       tabIndex={selectedValue === value ? 0 : -1}
       onClick={() => setSelectedValue(value)}
