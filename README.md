@@ -15,6 +15,17 @@ unidad-1/
     ├── basico/
     ├── intermedio/
     └── avanzado/
+
+unidad-2/
+├── contenido/
+│   ├── README.md
+│   ├── ejercicios-resueltos.md
+│   └── ejercicios-practica.md
+└── practica/
+    ├── README.md
+    ├── basico/
+    ├── intermedio/
+    └── avanzado/
 ```
 
 ## Unidad 1 – Arquitectura y Diseño Profesional en React
@@ -32,6 +43,22 @@ unidad-1/
 2. Refuerce con [`unidad-1/contenido/ejercicios-resueltos.md`](unidad-1/contenido/ejercicios-resueltos.md).
 3. Practique con [`unidad-1/contenido/ejercicios-practica.md`](unidad-1/contenido/ejercicios-practica.md).
 4. Ejecute o reutilice los ejemplos de [`unidad-1/practica`](unidad-1/practica).
+
+## Unidad 2 – Gestión Avanzada de Estado y Flujo de Datos
+
+**Duración sugerida:** 8 horas
+
+### Objetivos de la unidad
+- Dominar hooks avanzados y custom hooks para encapsular lógica de forma profesional.
+- Diseñar estrategias de estado complejo y formularios consistentes.
+- Componer Context API de forma escalable, minimizando re-renderizados.
+- Introducir criterios arquitectónicos para estado global y asincronía.
+
+### Navegación recomendada
+1. Lea [`unidad-2/contenido/README.md`](unidad-2/contenido/README.md).
+2. Refuerce con [`unidad-2/contenido/ejercicios-resueltos.md`](unidad-2/contenido/ejercicios-resueltos.md).
+3. Practique con [`unidad-2/contenido/ejercicios-practica.md`](unidad-2/contenido/ejercicios-practica.md).
+4. Ejecute o reutilice los ejemplos de [`unidad-2/practica`](unidad-2/practica).
 
 ## Criterios pedagógicos del repositorio
 - **Enfoque empresarial:** decisiones justificadas por mantenibilidad, velocidad de entrega y escalabilidad.
