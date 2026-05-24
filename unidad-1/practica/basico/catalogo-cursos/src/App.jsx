@@ -26,7 +26,7 @@ export default function App() {
   return (
     <main>
       <h1>Catálogo académico</h1>
-      <CourseFilters filters={filters} onChange={setFilters} />
+      <CourseFilters filters={filters} onFiltersChange={setFilters} />
       <CourseList courses={filteredCourses} />
     </main>
   );

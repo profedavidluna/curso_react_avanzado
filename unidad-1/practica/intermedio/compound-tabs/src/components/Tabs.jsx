@@ -38,7 +38,12 @@ Tabs.Trigger = function TabsTrigger({ children, value }) {
 
   const handleKeyDown = (event) => {
     const tabList = event.currentTarget.closest('[role="tablist"]');
-    const tabs = tabList ? Array.from(tabList.querySelectorAll('[role="tab"]')) : [];
+
+    if (!tabList) {
+      return;
+    }
+
+    const tabs = Array.from(tabList.querySelectorAll('[role="tab"]'));
     const currentIndex = tabs.indexOf(event.currentTarget);
 
     if (currentIndex === -1 || tabs.length === 0) {

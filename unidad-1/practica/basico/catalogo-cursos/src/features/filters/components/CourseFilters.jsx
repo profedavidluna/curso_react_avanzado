@@ -1,9 +1,9 @@
-export function CourseFilters({ filters, onChange }) {
+export function CourseFilters({ filters, onFiltersChange }) {
   const searchInputId = 'course-search';
   const levelSelectId = 'course-level';
 
   const handleFieldChange = (field, value) => {
-    onChange((currentFilters) => ({
+    onFiltersChange((currentFilters) => ({
       ...currentFilters,
       [field]: value,
     }));
