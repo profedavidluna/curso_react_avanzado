@@ -7,6 +7,7 @@ Al finalizar esta unidad, el estudiante podrá medir, optimizar y sostener el re
 
 ### 1. Contenido teórico
 - `contenido/README.md`: guía completa de la unidad.
+- `contenido/teoria-y-explicaciones.md`: material de estudio para estudiantes por punto del módulo.
 - `contenido/ejercicios-resueltos.md`: ejercicios explicados paso a paso.
 - `contenido/ejercicios-practica.md`: ejercicios propuestos para trabajo autónomo o en clase.
 
