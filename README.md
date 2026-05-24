@@ -51,9 +51,10 @@ unidad-3/
 
 ### Navegación recomendada
 1. Lea [`unidad-1/contenido/README.md`](unidad-1/contenido/README.md).
-2. Refuerce con [`unidad-1/contenido/ejercicios-resueltos.md`](unidad-1/contenido/ejercicios-resueltos.md).
-3. Practique con [`unidad-1/contenido/ejercicios-practica.md`](unidad-1/contenido/ejercicios-practica.md).
-4. Ejecute o reutilice los ejemplos de [`unidad-1/practica`](unidad-1/practica).
+2. Estudie [`unidad-1/contenido/teoria-y-explicaciones.md`](unidad-1/contenido/teoria-y-explicaciones.md).
+3. Refuerce con [`unidad-1/contenido/ejercicios-resueltos.md`](unidad-1/contenido/ejercicios-resueltos.md).
+4. Practique con [`unidad-1/contenido/ejercicios-practica.md`](unidad-1/contenido/ejercicios-practica.md).
+5. Ejecute o reutilice los ejemplos de [`unidad-1/practica`](unidad-1/practica).
 
 ## Unidad 2 – Gestión Avanzada de Estado y Flujo de Datos
 
@@ -67,9 +68,10 @@ unidad-3/
 
 ### Navegación recomendada
 1. Lea [`unidad-2/contenido/README.md`](unidad-2/contenido/README.md).
-2. Refuerce con [`unidad-2/contenido/ejercicios-resueltos.md`](unidad-2/contenido/ejercicios-resueltos.md).
-3. Practique con [`unidad-2/contenido/ejercicios-practica.md`](unidad-2/contenido/ejercicios-practica.md).
-4. Ejecute o reutilice los ejemplos de [`unidad-2/practica`](unidad-2/practica).
+2. Estudie [`unidad-2/contenido/teoria-y-explicaciones.md`](unidad-2/contenido/teoria-y-explicaciones.md).
+3. Refuerce con [`unidad-2/contenido/ejercicios-resueltos.md`](unidad-2/contenido/ejercicios-resueltos.md).
+4. Practique con [`unidad-2/contenido/ejercicios-practica.md`](unidad-2/contenido/ejercicios-practica.md).
+5. Ejecute o reutilice los ejemplos de [`unidad-2/practica`](unidad-2/practica).
 
 ## Unidad 3 – Optimización, Calidad y Evolución Profesional
 
@@ -83,9 +85,10 @@ unidad-3/
 
 ### Navegación recomendada
 1. Lea [`unidad-3/contenido/README.md`](unidad-3/contenido/README.md).
-2. Refuerce con [`unidad-3/contenido/ejercicios-resueltos.md`](unidad-3/contenido/ejercicios-resueltos.md).
-3. Practique con [`unidad-3/contenido/ejercicios-practica.md`](unidad-3/contenido/ejercicios-practica.md).
-4. Ejecute o reutilice los ejemplos de [`unidad-3/practica`](unidad-3/practica).
+2. Estudie [`unidad-3/contenido/teoria-y-explicaciones.md`](unidad-3/contenido/teoria-y-explicaciones.md).
+3. Refuerce con [`unidad-3/contenido/ejercicios-resueltos.md`](unidad-3/contenido/ejercicios-resueltos.md).
+4. Practique con [`unidad-3/contenido/ejercicios-practica.md`](unidad-3/contenido/ejercicios-practica.md).
+5. Ejecute o reutilice los ejemplos de [`unidad-3/practica`](unidad-3/practica).
 
 ## Criterios pedagógicos del repositorio
 - **Enfoque empresarial:** decisiones justificadas por mantenibilidad, velocidad de entrega y escalabilidad.
