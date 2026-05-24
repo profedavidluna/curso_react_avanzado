@@ -26,6 +26,17 @@ unidad-2/
     ├── basico/
     ├── intermedio/
     └── avanzado/
+
+unidad-3/
+├── contenido/
+│   ├── README.md
+│   ├── ejercicios-resueltos.md
+│   └── ejercicios-practica.md
+└── practica/
+    ├── README.md
+    ├── basico/
+    ├── intermedio/
+    └── avanzado/
 ```
 
 ## Unidad 1 – Arquitectura y Diseño Profesional en React
@@ -59,6 +70,22 @@ unidad-2/
 2. Refuerce con [`unidad-2/contenido/ejercicios-resueltos.md`](unidad-2/contenido/ejercicios-resueltos.md).
 3. Practique con [`unidad-2/contenido/ejercicios-practica.md`](unidad-2/contenido/ejercicios-practica.md).
 4. Ejecute o reutilice los ejemplos de [`unidad-2/practica`](unidad-2/practica).
+
+## Unidad 3 – Optimización, Calidad y Evolución Profesional
+
+**Duración sugerida:** 8 horas
+
+### Objetivos de la unidad
+- Optimizar renderizado con `React.memo`, `useMemo` y `useCallback` con base en diagnóstico.
+- Aplicar code splitting y carga diferida para mejorar performance percibida.
+- Implementar estrategias avanzadas como virtualización y segmentación de componentes pesados.
+- Integrar testing profesional y refactorización incremental para calidad continua.
+
+### Navegación recomendada
+1. Lea [`unidad-3/contenido/README.md`](unidad-3/contenido/README.md).
+2. Refuerce con [`unidad-3/contenido/ejercicios-resueltos.md`](unidad-3/contenido/ejercicios-resueltos.md).
+3. Practique con [`unidad-3/contenido/ejercicios-practica.md`](unidad-3/contenido/ejercicios-practica.md).
+4. Ejecute o reutilice los ejemplos de [`unidad-3/practica`](unidad-3/practica).
 
 ## Criterios pedagógicos del repositorio
 - **Enfoque empresarial:** decisiones justificadas por mantenibilidad, velocidad de entrega y escalabilidad.
