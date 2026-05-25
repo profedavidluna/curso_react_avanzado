@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { initialBooks, initialAuthors, initialCategories } from './mockData';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
-import BookList from './components/BookList';
-import AuthorList from './components/AuthorList';
-import CategoryList from './components/CategoryList';
-import Modal from './components/Modal';
-import BookForm from './components/BookForm';
+import Sidebar from './commons/componentes/Sidebar';
+import Header from './commons/componentes/Header';
+import { BookList, BookForm } from './features/books/';
+import { AuthorList } from './features/autores';
+import {CategoryList} from './features/categorias';
+import Modal from './commons/componentes/Modal';
 
 function App() {
   // --- ESTADOS GLOBALES DE LA APP (MONOLITO) ---
