@@ -1,2 +1,2 @@
-export { default as CategoryList } from './CategoryList';
-export { default as CategoryForm } from './CategoryCard';
+export { default as CategoryList } from '@/features/categorias/components/CategoryList';
+export { default as CategoryCard } from '@/features/categorias/components/CategoryCard';

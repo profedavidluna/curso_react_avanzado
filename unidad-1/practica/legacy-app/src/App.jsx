@@ -1,15 +1,21 @@
-import { useState, useEffect } from 'react';
+import { lazy, suspense, useState, useEffect, Suspense } from 'react';
 import { initialBooks, initialAuthors, initialCategories } from './mockData';
-import Sidebar from './commons/componentes/Sidebar';
-import Header from './commons/componentes/Header';
-import { BookList, BookForm } from './features/books/';
-import { AuthorList } from './features/autores';
-import {CategoryList} from './features/categorias';
-import Modal from './commons/componentes/Modal';
+import SidebarHooks from '@/commons/components/SidebarHooks';
+import Header from '@/commons/components/Header';
+import { BookList, BookForm } from '@/features/books/';
+import HooksMenu from './pages/HooksMenu';
+import { AuthorList } from '@/features/autores';
+import Modal from '@/commons/components/Modal';
+import withLoading from '@/commons/components/withLoading';
+import CategoryList from '@/features/categorias/components/CategoryList';
+
+
+const CategoryListWithLoading = withLoading(CategoryList);
+
 
 function App() {
   // --- ESTADOS GLOBALES DE LA APP (MONOLITO) ---
-  const [currentView, setCurrentView] = useState('books'); // 'books', 'authors', 'categories'
+  const [currentView, setCurrentView] = useState('books'); // 'books', 'authors', 'categories', 'hooks'
   const [books, setBooks] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -43,7 +49,7 @@ function App() {
       setAuthors(initialAuthors);
       setCategories(initialCategories);
       setIsLoading(false);
-    }, 800);
+    }, 3000); // 3 segundos para ver el loader
     return () => clearTimeout(timer);
   }, []);
 
@@ -116,9 +122,9 @@ function App() {
   return (
     <div>
       {/* --- SIDEBAR LATERAL (PROP DRILLING) --- */}
-      <Sidebar 
-        currentView={currentView} 
-        setCurrentView={setCurrentView} 
+      <SidebarHooks
+        currentView={currentView}
+        setCurrentView={setCurrentView}
       />
 
       {/* --- CONTENIDO PRINCIPAL --- */}
@@ -136,32 +142,45 @@ function App() {
         />
 
         {/* --- VISTA DE CARGA --- */}
-        {isLoading ? (
-          <div style={{ textAlign: 'center', padding: '100px', fontSize: '18px', color: '#94a3b8' }}>
-            Cargando datos del sistema...
-          </div>
-        ) : (
-          <>
-            {/* --- SECCIÓN 1: VISTA DE LIBROS (PROP DRILLING) --- */}
-            {currentView === 'books' && (
-              <BookList 
-                filteredBooks={filteredBooks}
-                getAuthorName={getAuthorName}
-                getCategoryName={getCategoryName}
-                onOpenDetails={openBookDetails}
-              />
-            )}
+        {/* --- SECCIÓN 1: VISTA DE LIBROS (PROP DRILLING) --- */}
+        {currentView === 'books' && (
+          isLoading ? (
+            <div style={{ textAlign: 'center', padding: '100px', fontSize: '18px', color: '#94a3b8' }}>
+              Cargando datos del sistema...
+            </div>
+          ) : (
+            <BookList 
+              filteredBooks={filteredBooks}
+              getAuthorName={getAuthorName}
+              getCategoryName={getCategoryName}
+              onOpenDetails={openBookDetails}
+            />
+          )
+        )}
 
-            {/* --- SECCIÓN 2: VISTA DE AUTORES (PROP DRILLING) --- */}
-            {currentView === 'authors' && (
-              <AuthorList authors={authors} />
-            )}
+        {/* --- SECCIÓN 2: VISTA DE AUTORES (PROP DRILLING) --- */}
+        {currentView === 'authors' && (
+          isLoading ? (
+            <div style={{ textAlign: 'center', padding: '100px', fontSize: '18px', color: '#94a3b8' }}>
+              Cargando datos del sistema...
+            </div>
+          ) : (
+            <AuthorList authors={authors} />
+          )
+        )}
 
-            {/* --- SECCIÓN 3: VISTA DE CATEGORÍAS (PROP DRILLING) --- */}
-            {currentView === 'categories' && (
-              <CategoryList categories={categories} />
-            )}
-          </>
+        {/* --- SECCIÓN 3: VISTA DE CATEGORÍAS (PROP DRILLING) --- */}
+        {currentView === 'categories' && (
+          <CategoryListWithLoading 
+            categories={categories}
+            localLoadingMs={4500}
+            loadingText="Cargando categorías en la clase..."
+          />
+        )}
+
+        {/* --- SECCIÓN 4: VISTA DE HOOKS --- */}
+        {currentView === 'hooks' && (
+          <HooksMenu />
         )}
       </div>
 
