@@ -9,5 +9,6 @@ export function useApiData() {
     apiStatus: state.apiStatus,
     addBook: state.addBook,
     initializeData: state.initializeData,
+    cleanupInitializeData: state.cleanupInitializeData,
   }));
 }

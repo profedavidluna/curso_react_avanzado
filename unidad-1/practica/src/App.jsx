@@ -11,7 +11,8 @@ import { useApiData } from './hooks/useApiData';
 import { useAppStore } from './store/appStore';
 
 function App() {
-  const { books, authors, categories, isLoading, apiStatus, addBook, initializeData } = useApiData();
+  const { books, authors, categories, isLoading, apiStatus, addBook, initializeData, cleanupInitializeData } =
+    useApiData();
   const {
     currentView,
     setCurrentView,
@@ -68,7 +69,8 @@ function App() {
 
   useEffect(() => {
     initializeData();
-  }, [initializeData]);
+    return cleanupInitializeData;
+  }, [initializeData, cleanupInitializeData]);
 
   const filteredBooks = useMemo(
     () =>

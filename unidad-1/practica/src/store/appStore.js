@@ -25,6 +25,8 @@ const initialApiStatus = {
   categories: { endpoint: '/api/categories', state: 'loading', records: 0 },
 };
 
+let initializationTimer = null;
+
 export const useAppStore = create((set, get) => ({
   books: [],
   authors: [],
@@ -47,7 +49,8 @@ export const useAppStore = create((set, get) => ({
 
     set({ isDataInitialized: true });
 
-    setTimeout(() => {
+    initializationTimer = setTimeout(() => {
+      initializationTimer = null;
       const loadedAt = new Date().toISOString();
       set({
         books: initialBooks,
@@ -66,6 +69,12 @@ export const useAppStore = create((set, get) => ({
         },
       });
     }, 800);
+  },
+
+  cleanupInitializeData: () => {
+    if (!initializationTimer) return;
+    clearTimeout(initializationTimer);
+    initializationTimer = null;
   },
 
   addBook: (book) =>
