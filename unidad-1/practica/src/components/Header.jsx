@@ -1,4 +1,4 @@
-import { useApiData } from '../hooks/useApiData';
+import { useAppStore } from '../store/appStore';
 
 export function Header({ 
   currentView, 
@@ -8,7 +8,7 @@ export function Header({
   setSelectedCategoryFilter, 
   onAddBookClick,
 }) {
-  const { categories } = useApiData();
+  const categories = useAppStore((state) => state.categories);
 
   return (
     <div className="app-header">

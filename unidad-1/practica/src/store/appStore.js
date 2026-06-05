@@ -78,7 +78,7 @@ export const useAppStore = create((set, get) => ({
 
   cleanupInitializeData: () => {
     const { initializationTimerId } = get();
-    if (!initializationTimerId) return;
+    if (initializationTimerId === null) return;
     clearTimeout(initializationTimerId);
     set({ initializationTimerId: null, isInitializing: false });
   },
