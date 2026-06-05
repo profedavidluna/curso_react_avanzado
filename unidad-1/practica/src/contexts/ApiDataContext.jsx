@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { initialAuthors, initialBooks, initialCategories } from '../mockData';
-import { ApiDataContext } from './apiDataContext';
+import { ApiDataContext } from './ApiDataContextStore';
 
 export function ApiDataProvider({ children }) {
   const [books, setBooks] = useState([]);
@@ -31,7 +31,7 @@ export function ApiDataProvider({ children }) {
     return () => clearTimeout(timer);
   }, []);
 
-  const addBook = (book) => {
+  const addBook = useCallback((book) => {
     setBooks((previousBooks) => [book, ...previousBooks]);
     setApiStatus((previousStatus) => ({
       ...previousStatus,
@@ -42,7 +42,7 @@ export function ApiDataProvider({ children }) {
         loadedAt: new Date().toISOString(),
       },
     }));
-  };
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -53,7 +53,7 @@ export function ApiDataProvider({ children }) {
       apiStatus,
       addBook,
     }),
-    [books, authors, categories, isLoading, apiStatus],
+    [books, authors, categories, isLoading, apiStatus, addBook],
   );
 
   return <ApiDataContext.Provider value={value}>{children}</ApiDataContext.Provider>;

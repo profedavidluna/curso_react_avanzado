@@ -6,7 +6,7 @@ import AuthorList from './components/AuthorList';
 import CategoryList from './components/CategoryList';
 import Modal from './components/Modal';
 import BookForm from './components/BookForm';
-import UserPreferencesPanel from './components/UserPreferencesPanel';
+import { UserPreferencesPanel } from './components/UserPreferencesPanel';
 import { useApiData } from './hooks/useApiData';
 
 function App() {
@@ -71,7 +71,7 @@ function App() {
     }
 
     const newBook = {
-      id: `b-${crypto.randomUUID()}`,
+      id: `b_${crypto.randomUUID()}`,
       title: formTitle,
       authorId: formAuthorId,
       categoryId: formCategoryId,

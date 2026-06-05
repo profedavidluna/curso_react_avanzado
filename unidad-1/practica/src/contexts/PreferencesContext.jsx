@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { PreferencesContext } from './preferencesContext';
+import { useCallback, useMemo, useState } from 'react';
+import { PreferencesContext } from './PreferencesContextStore';
 
 const initialPreferences = {
   theme: 'oscuro',
@@ -11,19 +11,19 @@ const initialPreferences = {
 export function PreferencesProvider({ children }) {
   const [preferences, setPreferences] = useState(initialPreferences);
 
-  const updatePreference = (key, value) => {
+  const updatePreference = useCallback((key, value) => {
     setPreferences((previousPreferences) => ({
       ...previousPreferences,
       [key]: value,
     }));
-  };
+  }, []);
 
   const value = useMemo(
     () => ({
       preferences,
       updatePreference,
     }),
-    [preferences],
+    [preferences, updatePreference],
   );
 
   return <PreferencesContext.Provider value={value}>{children}</PreferencesContext.Provider>;

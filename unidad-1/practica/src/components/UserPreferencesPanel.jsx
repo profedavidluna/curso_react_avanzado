@@ -44,5 +44,3 @@ export function UserPreferencesPanel() {
     </section>
   );
 }
-
-export default UserPreferencesPanel;
