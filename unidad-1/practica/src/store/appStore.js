@@ -25,15 +25,15 @@ const initialApiStatus = {
   categories: { endpoint: '/api/categories', state: 'loading', records: 0 },
 };
 
-let initializationTimer = null;
-
 export const useAppStore = create((set, get) => ({
   books: [],
   authors: [],
   categories: [],
   isLoading: true,
+  isInitializing: false,
   apiStatus: initialApiStatus,
   isDataInitialized: false,
+  initializationTimerId: null,
   preferences: initialPreferences,
   currentView: 'books',
   searchQuery: '',
@@ -45,18 +45,21 @@ export const useAppStore = create((set, get) => ({
   ...initialFormState,
 
   initializeData: () => {
-    if (get().isDataInitialized) return;
+    const { isDataInitialized, isInitializing } = get();
+    if (isDataInitialized || isInitializing) return;
 
-    set({ isDataInitialized: true });
+    set({ isInitializing: true });
 
-    initializationTimer = setTimeout(() => {
-      initializationTimer = null;
+    const timerId = setTimeout(() => {
       const loadedAt = new Date().toISOString();
       set({
         books: initialBooks,
         authors: initialAuthors,
         categories: initialCategories,
         isLoading: false,
+        isInitializing: false,
+        isDataInitialized: true,
+        initializationTimerId: null,
         apiStatus: {
           books: { endpoint: '/api/books', state: 'loaded', records: initialBooks.length, loadedAt },
           authors: { endpoint: '/api/authors', state: 'loaded', records: initialAuthors.length, loadedAt },
@@ -69,12 +72,15 @@ export const useAppStore = create((set, get) => ({
         },
       });
     }, 800);
+
+    set({ initializationTimerId: timerId });
   },
 
   cleanupInitializeData: () => {
-    if (!initializationTimer) return;
-    clearTimeout(initializationTimer);
-    initializationTimer = null;
+    const { initializationTimerId } = get();
+    if (!initializationTimerId) return;
+    clearTimeout(initializationTimerId);
+    set({ initializationTimerId: null, isInitializing: false });
   },
 
   addBook: (book) =>
