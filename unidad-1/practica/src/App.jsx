@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { initialBooks, initialAuthors, initialCategories } from './mockData';
+import { useMemo, useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import BookList from './components/BookList';
@@ -7,27 +6,21 @@ import AuthorList from './components/AuthorList';
 import CategoryList from './components/CategoryList';
 import Modal from './components/Modal';
 import BookForm from './components/BookForm';
+import UserPreferencesPanel from './components/UserPreferencesPanel';
+import { useApiData } from './hooks/useApiData';
 
 function App() {
-  // --- ESTADOS GLOBALES DE LA APP (MONOLITO) ---
-  const [currentView, setCurrentView] = useState('books'); // 'books', 'authors', 'categories'
-  const [books, setBooks] = useState([]);
-  const [authors, setAuthors] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { books, authors, categories, isLoading, apiStatus, addBook } = useApiData();
+  const [currentView, setCurrentView] = useState('books');
 
-  // --- ESTADOS DE FILTRADO Y BÚSQUEDA ---
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('');
 
-  // --- ESTADOS DE MODALES ---
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedBookForDetail, setSelectedBookForDetail] = useState(null);
-  const [activeDetailTab, setActiveDetailTab] = useState('info'); // 'info', 'reviews', 'loans'
-
+  const [activeDetailTab, setActiveDetailTab] = useState('info');
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
 
-  // --- ESTADOS CONTROLADOS DEL FORMULARIO DE CREACIÓN DE LIBROS (Ineficiente, re-renderiza toda la App en cada pulsación) ---
   const [formTitle, setFormTitle] = useState('');
   const [formAuthorId, setFormAuthorId] = useState('');
   const [formCategoryId, setFormCategoryId] = useState('');
@@ -37,51 +30,25 @@ function App() {
   const [formSummary, setFormSummary] = useState('');
   const [formCoverUrl, setFormCoverUrl] = useState('');
 
-  // Simulación de carga de datos iniciales
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setBooks(initialBooks);
-      setAuthors(initialAuthors);
-      setCategories(initialCategories);
-      setIsLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
-  }, []);
+  const filteredBooks = useMemo(
+    () =>
+      books.filter((book) => {
+        const matchesSearch =
+          book.title.toLowerCase().includes(searchQuery.toLowerCase()) || book.isbn.includes(searchQuery);
+        const matchesCategory = selectedCategoryFilter === '' || book.categoryId === selectedCategoryFilter;
+        return matchesSearch && matchesCategory;
+      }),
+    [books, searchQuery, selectedCategoryFilter],
+  );
 
-  // --- LÓGICA DE FILTRADO DIRECTA EN RENDER (Re-calculado en cada render de la App) ---
-  const filteredBooks = books.filter(book => {
-    const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          book.isbn.includes(searchQuery);
-    const matchesCategory = selectedCategoryFilter === '' || book.categoryId === selectedCategoryFilter;
-    return matchesSearch && matchesCategory;
-  });
+  const getAuthorName = (authorId) => {
+    const author = authors.find((entry) => entry.id === authorId);
+    return author ? author.name : 'Autor Desconocido';
+  };
 
-  // Manejo de la creación del libro
-  const handleCreateBookSubmit = (e) => {
-    e.preventDefault();
-    
-    if (!formTitle || !formAuthorId || !formCategoryId) {
-      alert('Por favor, rellene los campos obligatorios (Título, Autor y Categoría)');
-      return;
-    }
-
-    const newBook = {
-      id: `b${Date.now()}`,
-      title: formTitle,
-      authorId: formAuthorId,
-      categoryId: formCategoryId,
-      isbn: formIsbn || "N/A",
-      pages: parseInt(formPages) || 0,
-      year: parseInt(formYear) || new Date().getFullYear(),
-      summary: formSummary || "Sin resumen disponible.",
-      coverUrl: formCoverUrl || "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80",
-      reviews: [],
-      loans: []
-    };
-
-    setBooks([newBook, ...books]);
-    resetBookForm();
-    setIsAddBookModalOpen(false);
+  const getCategoryName = (categoryId) => {
+    const category = categories.find((entry) => entry.id === categoryId);
+    return category ? category.name : 'Sin Categoría';
   };
 
   const resetBookForm = () => {
@@ -95,57 +62,83 @@ function App() {
     setFormCoverUrl('');
   };
 
-  // Abrir Modal de Detalle
+  const handleCreateBookSubmit = (event) => {
+    event.preventDefault();
+
+    if (!formTitle || !formAuthorId || !formCategoryId) {
+      alert('Por favor, rellene los campos obligatorios (Título, Autor y Categoría)');
+      return;
+    }
+
+    const newBook = {
+      id: `b-${crypto.randomUUID()}`,
+      title: formTitle,
+      authorId: formAuthorId,
+      categoryId: formCategoryId,
+      isbn: formIsbn || 'N/A',
+      pages: Number.parseInt(formPages, 10) || 0,
+      year: Number.parseInt(formYear, 10) || new Date().getFullYear(),
+      summary: formSummary || 'Sin resumen disponible.',
+      coverUrl: formCoverUrl || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80',
+      reviews: [],
+      loans: [],
+    };
+
+    addBook(newBook);
+    resetBookForm();
+    setIsAddBookModalOpen(false);
+  };
+
   const openBookDetails = (book) => {
     setSelectedBookForDetail(book);
     setActiveDetailTab('info');
     setIsDetailModalOpen(true);
   };
 
-  // Obtener nombre del autor por ID
-  const getAuthorName = (authorId) => {
-    const author = authors.find(a => a.id === authorId);
-    return author ? author.name : 'Autor Desconocido';
-  };
-
-  // Obtener categoría por ID
-  const getCategoryName = (catId) => {
-    const category = categories.find(c => c.id === catId);
-    return category ? category.name : 'Sin Categoría';
-  };
-
   return (
     <div>
-      {/* --- SIDEBAR LATERAL (PROP DRILLING) --- */}
-      <Sidebar 
-        currentView={currentView} 
-        setCurrentView={setCurrentView} 
-      />
+      <Sidebar currentView={currentView} setCurrentView={setCurrentView} />
 
-      {/* --- CONTENIDO PRINCIPAL --- */}
       <div className="main-wrapper">
-        
-        {/* --- CABECERA DE LA PÁGINA (PROP DRILLING DEL BUSCADOR ACOPLADO) --- */}
-        <Header 
+        <Header
           currentView={currentView}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           selectedCategoryFilter={selectedCategoryFilter}
           setSelectedCategoryFilter={setSelectedCategoryFilter}
-          categories={categories}
-          onAddBookClick={() => setIsAddBookOpen(true)}
+          onAddBookClick={() => setIsAddBookModalOpen(true)}
         />
 
-        {/* --- VISTA DE CARGA --- */}
+        {currentView === 'books' && (
+          <section
+            style={{
+              marginBottom: '20px',
+              border: '1px solid #334155',
+              backgroundColor: '#1e293b',
+              borderRadius: '10px',
+              padding: '12px',
+              fontSize: '13px',
+            }}
+          >
+            <strong style={{ display: 'block', marginBottom: '8px' }}>Estado de APIs simuladas</strong>
+            <ul style={{ listStyle: 'none', display: 'grid', gap: '4px' }}>
+              {Object.entries(apiStatus).map(([key, status]) => (
+                <li key={key}>
+                  {status.endpoint} → <strong>{status.state}</strong> ({status.records} registros)
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         {isLoading ? (
           <div style={{ textAlign: 'center', padding: '100px', fontSize: '18px', color: '#94a3b8' }}>
             Cargando datos del sistema...
           </div>
         ) : (
           <>
-            {/* --- SECCIÓN 1: VISTA DE LIBROS (PROP DRILLING) --- */}
             {currentView === 'books' && (
-              <BookList 
+              <BookList
                 filteredBooks={filteredBooks}
                 getAuthorName={getAuthorName}
                 getCategoryName={getCategoryName}
@@ -153,23 +146,16 @@ function App() {
               />
             )}
 
-            {/* --- SECCIÓN 2: VISTA DE AUTORES (PROP DRILLING) --- */}
-            {currentView === 'authors' && (
-              <AuthorList authors={authors} />
-            )}
+            {currentView === 'authors' && <AuthorList authors={authors} />}
 
-            {/* --- SECCIÓN 3: VISTA DE CATEGORÍAS (PROP DRILLING) --- */}
-            {currentView === 'categories' && (
-              <CategoryList categories={categories} />
-            )}
+            {currentView === 'categories' && <CategoryList categories={categories} />}
+
+            {currentView === 'preferences' && <UserPreferencesPanel />}
           </>
         )}
       </div>
 
-      {/* =======================================================
-          MODAL DE DETALLES DEL LIBRO (PROP DRILLING MASSIVE & RIGID)
-          ======================================================= */}
-      <Modal 
+      <Modal
         isOpen={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}
         book={selectedBookForDetail}
@@ -179,20 +165,18 @@ function App() {
         setActiveDetailTab={setActiveDetailTab}
       />
 
-      {/* =======================================================
-          MODAL CON FORMULARIO DE NUEVO LIBRO (PROP DRILLING BRUTAL)
-          ======================================================= */}
       {isAddBookModalOpen && (
         <div className="modal-overlay-bg" onClick={() => setIsAddBookModalOpen(false)}>
-          <div className="modal-content-box" onClick={(e) => e.stopPropagation()}>
-            
+          <div className="modal-content-box" onClick={(event) => event.stopPropagation()}>
             <div className="modal-header-section">
               <h2 className="modal-title-text">Registrar Nuevo Libro</h2>
-              <button className="modal-close-icon" onClick={() => setIsAddBookModalOpen(false)}>×</button>
+              <button className="modal-close-icon" onClick={() => setIsAddBookModalOpen(false)}>
+                ×
+              </button>
             </div>
 
             <div className="modal-body-section">
-              <BookForm 
+              <BookForm
                 onSubmit={handleCreateBookSubmit}
                 onCancel={() => {
                   resetBookForm();
@@ -218,7 +202,6 @@ function App() {
                 setFormCoverUrl={setFormCoverUrl}
               />
             </div>
-
           </div>
         </div>
       )}

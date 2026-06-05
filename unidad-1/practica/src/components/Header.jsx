@@ -1,4 +1,4 @@
-import React from 'react';
+import { useApiData } from '../hooks/useApiData';
 
 export function Header({ 
   currentView, 
@@ -6,9 +6,10 @@ export function Header({
   setSearchQuery, 
   selectedCategoryFilter, 
   setSelectedCategoryFilter, 
-  categories, 
-  onAddBookClick 
+  onAddBookClick,
 }) {
+  const { categories } = useApiData();
+
   return (
     <div className="app-header">
       <div>
@@ -16,6 +17,7 @@ export function Header({
           {currentView === 'books' && 'Catálogo de Libros'}
           {currentView === 'authors' && 'Directorio de Autores'}
           {currentView === 'categories' && 'Categorías Literarias'}
+          {currentView === 'preferences' && 'Preferencias de Usuario'}
         </h1>
         <p style={{ color: '#94a3b8', fontSize: '14px', marginTop: '5px' }}>
           Gestión Avanzada del Sistema de Biblioteca
