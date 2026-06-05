@@ -1,12 +1,13 @@
-import { useContext } from 'react';
-import { ApiDataContext } from '../contexts/ApiDataContextStore';
+import { useAppStore } from '../store/appStore';
 
 export function useApiData() {
-  const context = useContext(ApiDataContext);
-
-  if (!context) {
-    throw new Error('useApiData debe usarse dentro de ApiDataProvider');
-  }
-
-  return context;
+  return useAppStore((state) => ({
+    books: state.books,
+    authors: state.authors,
+    categories: state.categories,
+    isLoading: state.isLoading,
+    apiStatus: state.apiStatus,
+    addBook: state.addBook,
+    initializeData: state.initializeData,
+  }));
 }

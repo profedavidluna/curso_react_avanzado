@@ -1,12 +1,8 @@
-import { useContext } from 'react';
-import { PreferencesContext } from '../contexts/PreferencesContextStore';
+import { useAppStore } from '../store/appStore';
 
 export function usePreferences() {
-  const context = useContext(PreferencesContext);
-
-  if (!context) {
-    throw new Error('usePreferences debe usarse dentro de PreferencesProvider');
-  }
-
-  return context;
+  return useAppStore((state) => ({
+    preferences: state.preferences,
+    updatePreference: state.updatePreference,
+  }));
 }

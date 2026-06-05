@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import BookList from './components/BookList';
@@ -8,27 +8,67 @@ import Modal from './components/Modal';
 import BookForm from './components/BookForm';
 import { UserPreferencesPanel } from './components/UserPreferencesPanel';
 import { useApiData } from './hooks/useApiData';
+import { useAppStore } from './store/appStore';
 
 function App() {
-  const { books, authors, categories, isLoading, apiStatus, addBook } = useApiData();
-  const [currentView, setCurrentView] = useState('books');
+  const { books, authors, categories, isLoading, apiStatus, addBook, initializeData } = useApiData();
+  const {
+    currentView,
+    setCurrentView,
+    searchQuery,
+    setSearchQuery,
+    selectedCategoryFilter,
+    setSelectedCategoryFilter,
+    isDetailModalOpen,
+    selectedBookForDetail,
+    activeDetailTab,
+    setActiveDetailTab,
+    isAddBookModalOpen,
+    openAddBookModal,
+    closeAddBookModal,
+    openBookDetails,
+    closeBookDetails,
+    formTitle,
+    formAuthorId,
+    formCategoryId,
+    formIsbn,
+    formPages,
+    formYear,
+    formSummary,
+    formCoverUrl,
+    setFormField,
+    resetBookForm,
+  } = useAppStore((state) => ({
+    currentView: state.currentView,
+    setCurrentView: state.setCurrentView,
+    searchQuery: state.searchQuery,
+    setSearchQuery: state.setSearchQuery,
+    selectedCategoryFilter: state.selectedCategoryFilter,
+    setSelectedCategoryFilter: state.setSelectedCategoryFilter,
+    isDetailModalOpen: state.isDetailModalOpen,
+    selectedBookForDetail: state.selectedBookForDetail,
+    activeDetailTab: state.activeDetailTab,
+    setActiveDetailTab: state.setActiveDetailTab,
+    isAddBookModalOpen: state.isAddBookModalOpen,
+    openAddBookModal: state.openAddBookModal,
+    closeAddBookModal: state.closeAddBookModal,
+    openBookDetails: state.openBookDetails,
+    closeBookDetails: state.closeBookDetails,
+    formTitle: state.formTitle,
+    formAuthorId: state.formAuthorId,
+    formCategoryId: state.formCategoryId,
+    formIsbn: state.formIsbn,
+    formPages: state.formPages,
+    formYear: state.formYear,
+    formSummary: state.formSummary,
+    formCoverUrl: state.formCoverUrl,
+    setFormField: state.setFormField,
+    resetBookForm: state.resetBookForm,
+  }));
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('');
-
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [selectedBookForDetail, setSelectedBookForDetail] = useState(null);
-  const [activeDetailTab, setActiveDetailTab] = useState('info');
-  const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
-
-  const [formTitle, setFormTitle] = useState('');
-  const [formAuthorId, setFormAuthorId] = useState('');
-  const [formCategoryId, setFormCategoryId] = useState('');
-  const [formIsbn, setFormIsbn] = useState('');
-  const [formPages, setFormPages] = useState('');
-  const [formYear, setFormYear] = useState('');
-  const [formSummary, setFormSummary] = useState('');
-  const [formCoverUrl, setFormCoverUrl] = useState('');
+  useEffect(() => {
+    initializeData();
+  }, [initializeData]);
 
   const filteredBooks = useMemo(
     () =>
@@ -49,17 +89,6 @@ function App() {
   const getCategoryName = (categoryId) => {
     const category = categories.find((entry) => entry.id === categoryId);
     return category ? category.name : 'Sin Categoría';
-  };
-
-  const resetBookForm = () => {
-    setFormTitle('');
-    setFormAuthorId('');
-    setFormCategoryId('');
-    setFormIsbn('');
-    setFormPages('');
-    setFormYear('');
-    setFormSummary('');
-    setFormCoverUrl('');
   };
 
   const handleCreateBookSubmit = (event) => {
@@ -86,13 +115,7 @@ function App() {
 
     addBook(newBook);
     resetBookForm();
-    setIsAddBookModalOpen(false);
-  };
-
-  const openBookDetails = (book) => {
-    setSelectedBookForDetail(book);
-    setActiveDetailTab('info');
-    setIsDetailModalOpen(true);
+    closeAddBookModal();
   };
 
   return (
@@ -106,7 +129,7 @@ function App() {
           setSearchQuery={setSearchQuery}
           selectedCategoryFilter={selectedCategoryFilter}
           setSelectedCategoryFilter={setSelectedCategoryFilter}
-          onAddBookClick={() => setIsAddBookModalOpen(true)}
+          onAddBookClick={openAddBookModal}
         />
 
         {currentView === 'books' && (
@@ -157,7 +180,7 @@ function App() {
 
       <Modal
         isOpen={isDetailModalOpen}
-        onClose={() => setIsDetailModalOpen(false)}
+        onClose={closeBookDetails}
         book={selectedBookForDetail}
         getAuthorName={getAuthorName}
         getCategoryName={getCategoryName}
@@ -166,11 +189,11 @@ function App() {
       />
 
       {isAddBookModalOpen && (
-        <div className="modal-overlay-bg" onClick={() => setIsAddBookModalOpen(false)}>
+        <div className="modal-overlay-bg" onClick={closeAddBookModal}>
           <div className="modal-content-box" onClick={(event) => event.stopPropagation()}>
             <div className="modal-header-section">
               <h2 className="modal-title-text">Registrar Nuevo Libro</h2>
-              <button className="modal-close-icon" onClick={() => setIsAddBookModalOpen(false)}>
+              <button className="modal-close-icon" onClick={closeAddBookModal}>
                 ×
               </button>
             </div>
@@ -180,26 +203,26 @@ function App() {
                 onSubmit={handleCreateBookSubmit}
                 onCancel={() => {
                   resetBookForm();
-                  setIsAddBookModalOpen(false);
+                  closeAddBookModal();
                 }}
                 authors={authors}
                 categories={categories}
                 formTitle={formTitle}
-                setFormTitle={setFormTitle}
+                setFormTitle={(value) => setFormField('formTitle', value)}
                 formAuthorId={formAuthorId}
-                setFormAuthorId={setFormAuthorId}
+                setFormAuthorId={(value) => setFormField('formAuthorId', value)}
                 formCategoryId={formCategoryId}
-                setFormCategoryId={setFormCategoryId}
+                setFormCategoryId={(value) => setFormField('formCategoryId', value)}
                 formIsbn={formIsbn}
-                setFormIsbn={setFormIsbn}
+                setFormIsbn={(value) => setFormField('formIsbn', value)}
                 formPages={formPages}
-                setFormPages={setFormPages}
+                setFormPages={(value) => setFormField('formPages', value)}
                 formYear={formYear}
-                setFormYear={setFormYear}
+                setFormYear={(value) => setFormField('formYear', value)}
                 formSummary={formSummary}
-                setFormSummary={setFormSummary}
+                setFormSummary={(value) => setFormField('formSummary', value)}
                 formCoverUrl={formCoverUrl}
-                setFormCoverUrl={setFormCoverUrl}
+                setFormCoverUrl={(value) => setFormField('formCoverUrl', value)}
               />
             </div>
           </div>
