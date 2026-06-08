@@ -7,6 +7,7 @@ import CategoryList from './components/CategoryList';
 import Modal from './components/Modal';
 import BookForm from './components/BookForm';
 import { UserPreferencesPanel } from './components/UserPreferencesPanel';
+import { UserPreferencesPanelDirectStore } from './components/UserPreferencesPanelDirectStore';
 import { useApiData } from './hooks/useApiData';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from './store/appStore';
@@ -176,7 +177,12 @@ function App() {
 
             {currentView === 'categories' && <CategoryList categories={categories} />}
 
-            {currentView === 'preferences' && <UserPreferencesPanel />}
+            {currentView === 'preferences' && (
+              <div style={{ display: 'grid', gap: '20px' }}>
+                <UserPreferencesPanel />
+                <UserPreferencesPanelDirectStore />
+              </div>
+            )}
           </>
         )}
       </div>
