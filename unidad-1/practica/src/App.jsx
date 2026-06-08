@@ -8,6 +8,7 @@ import Modal from './components/Modal';
 import BookForm from './components/BookForm';
 import { UserPreferencesPanel } from './components/UserPreferencesPanel';
 import { useApiData } from './hooks/useApiData';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from './store/appStore';
 
 function App() {
@@ -39,7 +40,7 @@ function App() {
     formCoverUrl,
     setFormField,
     resetBookForm,
-  } = useAppStore((state) => ({
+  } = useAppStore(useShallow((state) => ({
     currentView: state.currentView,
     setCurrentView: state.setCurrentView,
     searchQuery: state.searchQuery,
@@ -65,7 +66,7 @@ function App() {
     formCoverUrl: state.formCoverUrl,
     setFormField: state.setFormField,
     resetBookForm: state.resetBookForm,
-  }));
+  })));
 
   useEffect(() => {
     initializeData();

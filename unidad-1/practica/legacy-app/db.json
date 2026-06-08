@@ -1,0 +1,200 @@
+{
+  "authors": [
+    {
+      "id": "a1",
+      "name": "Gabriel Garcia Marquez",
+      "bio": "Escritor y periodista colombiano, Premio Nobel de Literatura en 1982.",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80"
+    },
+    {
+      "id": "a2",
+      "name": "Dan Brown",
+      "bio": "Escritor estadounidense conocido por novelas de suspenso y conspiraciones.",
+      "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80"
+    },
+    {
+      "id": "a3",
+      "name": "Stephen Hawking",
+      "bio": "Fisico teorico y divulgador cientifico britanico.",
+      "avatarUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&q=80"
+    },
+    {
+      "id": "a4",
+      "name": "Isabel Allende",
+      "bio": "Novelista chilena de narrativa historica y realismo magico.",
+      "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80"
+    },
+    {
+      "id": "a5",
+      "name": "Yuval Noah Harari",
+      "bio": "Historiador y escritor israeli, autor de ensayos de historia global.",
+      "avatarUrl": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&q=80"
+    }
+  ],
+  "categories": [
+    {
+      "id": "c1",
+      "name": "Ficcion y Novela",
+      "description": "Narrativa literaria, clasicos y novelas contemporaneas."
+    },
+    {
+      "id": "c2",
+      "name": "Suspenso y Thriller",
+      "description": "Misterio, conspiraciones y accion continua."
+    },
+    {
+      "id": "c3",
+      "name": "Ciencia y Divulgacion",
+      "description": "Explicaciones cientificas para publico general."
+    },
+    {
+      "id": "c4",
+      "name": "Historia",
+      "description": "Procesos historicos, civilizaciones y pensamiento social."
+    },
+    {
+      "id": "c5",
+      "name": "Tecnologia",
+      "description": "Innovacion, software, datos e impacto tecnologico."
+    }
+  ],
+  "books": [
+    {
+      "id": "b1",
+      "title": "Cien anos de soledad",
+      "authorId": "a1",
+      "categoryId": "c1",
+      "isbn": "9780307474728",
+      "pages": 496,
+      "year": 1967,
+      "summary": "Historia de la familia Buendia a traves de generaciones.",
+      "coverUrl": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&q=80",
+      "reviews": [
+        {
+          "id": "r1",
+          "user": "Ana",
+          "rating": 5,
+          "comment": "Obra maestra"
+        }
+      ],
+      "loans": [
+        {
+          "id": "l1",
+          "user": "Maria",
+          "startDate": "2026-05-01",
+          "endDate": "2026-05-15",
+          "status": "returned"
+        }
+      ]
+    },
+    {
+      "id": "b2",
+      "title": "El codigo Da Vinci",
+      "authorId": "a2",
+      "categoryId": "c2",
+      "isbn": "9780307474278",
+      "pages": 560,
+      "year": 2003,
+      "summary": "Thriller de misterio con simbolos y sociedades secretas.",
+      "coverUrl": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&q=80",
+      "reviews": [
+        {
+          "id": "r2",
+          "user": "Diego",
+          "rating": 4,
+          "comment": "Muy entretenido"
+        }
+      ],
+      "loans": []
+    },
+    {
+      "id": "b3",
+      "title": "Breve historia del tiempo",
+      "authorId": "a3",
+      "categoryId": "c3",
+      "isbn": "9788439702580",
+      "pages": 256,
+      "year": 1988,
+      "summary": "Introduccion accesible a cosmologia y fisica moderna.",
+      "coverUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80",
+      "reviews": [],
+      "loans": [
+        {
+          "id": "l2",
+          "user": "Paula",
+          "startDate": "2026-04-10",
+          "endDate": "2026-04-24",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "b4",
+      "title": "La casa de los espiritus",
+      "authorId": "a4",
+      "categoryId": "c1",
+      "isbn": "9788408064268",
+      "pages": 496,
+      "year": 1982,
+      "summary": "Saga familiar con elementos politicos y de realismo magico.",
+      "coverUrl": "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80",
+      "reviews": [
+        {
+          "id": "r3",
+          "user": "Laura",
+          "rating": 5,
+          "comment": "Excelente novela"
+        }
+      ],
+      "loans": []
+    },
+    {
+      "id": "b5",
+      "title": "Sapiens",
+      "authorId": "a5",
+      "categoryId": "c4",
+      "isbn": "9788499924218",
+      "pages": 496,
+      "year": 2011,
+      "summary": "Recorrido por la historia de la humanidad desde una mirada global.",
+      "coverUrl": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80",
+      "reviews": [
+        {
+          "id": "r4",
+          "user": "Nora",
+          "rating": 4,
+          "comment": "Muy recomendable"
+        }
+      ],
+      "loans": []
+    },
+    {
+      "id": "b6",
+      "title": "Clean Code",
+      "authorId": "a5",
+      "categoryId": "c5",
+      "isbn": "9780132350884",
+      "pages": 464,
+      "year": 2008,
+      "summary": "Buenas practicas para escribir codigo legible y mantenible.",
+      "coverUrl": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=400&q=80",
+      "reviews": [
+        {
+          "id": "r5",
+          "user": "Martin",
+          "rating": 5,
+          "comment": "Clave para equipos"
+        }
+      ],
+      "loans": [
+        {
+          "id": "l3",
+          "user": "Sofia",
+          "startDate": "2026-05-20",
+          "endDate": "2026-06-03",
+          "status": "active"
+        }
+      ]
+    }
+  ]
+}
