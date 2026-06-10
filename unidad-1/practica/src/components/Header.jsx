@@ -38,6 +38,15 @@ export function Header({
   // useRef guarda el ID del timer entre renders SIN provocar re-renders
   const debounceTimerRef = useRef(null);
 
+  // Cleanup: cancelar el timer si el componente se desmonta antes de que dispare
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
   // ---------------------------------------------------------------
   // useCallback EJEMPLO 2 – Handler con debounce
   //
