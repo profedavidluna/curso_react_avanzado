@@ -1,11 +1,14 @@
 import { useMemo } from 'react';
 
-// 240 copias generan un dataset suficientemente grande para notar el valor de la virtualización
-// sin volver la demo incómoda durante clase o revisión manual.
+// Multiplicamos el catálogo base para simular un escenario grande sin depender de una API real.
+// La idea es que el ejemplo tenga suficientes filas como para que la virtualización se note.
 const BOOK_MULTIPLIER = 240;
 
 export function usePerformanceCatalog({ books, searchQuery, selectedCategoryFilter, sortBy }) {
   const largeCatalog = useMemo(() => {
+    // Creamos 240 copias de cada libro del dataset base.
+    // Cada copia recibe un id nuevo y un código de inventario distinto para que React pueda renderizarla
+    // como un elemento independiente.
     return Array.from({ length: BOOK_MULTIPLIER }, (_, copyIndex) =>
       books.map((book) => ({
         ...book,
@@ -16,8 +19,11 @@ export function usePerformanceCatalog({ books, searchQuery, selectedCategoryFilt
   }, [books]);
 
   const filteredBooks = useMemo(() => {
+    // Normalizamos el texto para que la búsqueda no dependa de mayúsculas, minúsculas ni espacios extra.
     const normalizedQuery = searchQuery.toLowerCase().trim();
 
+    // Primero filtramos el catálogo grande.
+    // Después ordenamos el resultado para que la lista ya llegue lista para pintarse.
     const visibleBooks = largeCatalog.filter((book) => {
       const matchesSearch =
         normalizedQuery === '' ||
@@ -31,6 +37,8 @@ export function usePerformanceCatalog({ books, searchQuery, selectedCategoryFilt
     });
 
     return [...visibleBooks].sort((left, right) => {
+      // El orden final también se memoriza: solo se recalcula si cambia el catálogo,
+      // la búsqueda, el filtro o el criterio de orden.
       if (sortBy === 'year') {
         return right.year - left.year;
       }
@@ -45,6 +53,8 @@ export function usePerformanceCatalog({ books, searchQuery, selectedCategoryFilt
 
   const stats = useMemo(
     () => ({
+      // totalBooks muestra el tamaño real del dataset simulado.
+      // filteredBooks muestra cuántos resultados quedan después de buscar, filtrar y ordenar.
       totalBooks: largeCatalog.length,
       filteredBooks: filteredBooks.length,
     }),

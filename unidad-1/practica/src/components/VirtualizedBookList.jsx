@@ -1,7 +1,12 @@
 import { memo, useMemo, useState } from 'react';
 
+// Altura fija aproximada de cada tarjeta. Esto nos permite calcular qué parte del listado
+// corresponde al scroll actual sin renderizar todos los elementos.
 const ITEM_HEIGHT = 182;
+// Altura visible del contenedor donde se muestra la lista virtualizada.
 const VIEWPORT_HEIGHT = 560;
+// Extra de seguridad: renderizamos unas pocas filas antes y después de la zona visible
+// para evitar que aparezcan cortes bruscos al hacer scroll.
 const OVERSCAN = 2;
 
 function VirtualizedBookRowComponent({ book, getAuthorName, getCategoryName, onOpenDetails }) {
@@ -35,13 +40,21 @@ function VirtualizedBookListComponent({
   const [scrollTop, setScrollTop] = useState(0);
 
   const { visibleBooks, offsetTop, totalHeight } = useMemo(() => {
+    // start indica desde qué índice del array debemos empezar a mostrar tarjetas.
+    // Lo calculamos usando la posición del scroll y la altura fija de cada item.
     const start = Math.max(0, Math.floor(scrollTop / ITEM_HEIGHT) - OVERSCAN);
+    // visibleCount es cuántas tarjetas caben aproximadamente en pantalla,
+    // más un margen extra (overscan) para suavizar el desplazamiento.
     const visibleCount = Math.ceil(VIEWPORT_HEIGHT / ITEM_HEIGHT) + OVERSCAN * 2;
     const end = Math.min(books.length, start + visibleCount);
 
     return {
+      // Solo nos quedamos con la “ventana” visible del listado.
       visibleBooks: books.slice(start, end),
+      // offsetTop empuja el bloque visible hacia abajo para que parezca
+      // que todo el listado está montado, aunque solo pintemos una parte.
       offsetTop: start * ITEM_HEIGHT,
+      // totalHeight reserva el espacio completo del listado para que el scroll funcione bien.
       totalHeight: books.length * ITEM_HEIGHT,
     };
   }, [books, scrollTop]);
@@ -62,6 +75,8 @@ function VirtualizedBookListComponent({
         onScroll={(event) => setScrollTop(event.currentTarget.scrollTop)}
       >
         <div style={{ height: totalHeight, position: 'relative' }}>
+          {/* Este contenedor interno simula el alto completo del listado.
+              Lo que realmente pintamos es solo un bloque absoluto desplazado. */}
           <div style={{ position: 'absolute', top: offsetTop, left: 0, right: 0 }}>
             {visibleBooks.map((book) => (
               <VirtualizedBookRow

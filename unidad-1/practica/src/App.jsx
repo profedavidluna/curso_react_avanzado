@@ -7,6 +7,7 @@ import LibraryCatalogView from './components/LibraryCatalogView';
 import Modal from './components/Modal';
 import PerformanceView from './components/PerformanceView';
 import Sidebar from './components/Sidebar';
+import TransitionBooksView from './components/TransitionBooksView';
 
 function getNextBookNumericId(baseBooks) {
   // La app usa IDs del tipo `b{n}` en su dataset base; si aparece otro formato,
@@ -132,6 +133,16 @@ function App() {
 
             {currentView === 'performance' && (
               <PerformanceView
+                books={books}
+                categories={categories}
+                getAuthorName={getAuthorName}
+                getCategoryName={getCategoryName}
+                onOpenDetails={openBookDetails}
+              />
+            )}
+
+            {currentView === 'transition' && (
+              <TransitionBooksView
                 books={books}
                 categories={categories}
                 getAuthorName={getAuthorName}

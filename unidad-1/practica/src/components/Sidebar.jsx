@@ -27,6 +27,12 @@ export function Sidebar({ currentView, setCurrentView }) {
         >
           ⚡ Performance
         </li>
+        <li
+          className={`sidebar-item ${currentView === 'transition' ? 'sidebar-item-active' : ''}`}
+          onClick={() => setCurrentView('transition')}
+        >
+          🔄 useTransition
+        </li>
       </ul>
     </div>
   );
