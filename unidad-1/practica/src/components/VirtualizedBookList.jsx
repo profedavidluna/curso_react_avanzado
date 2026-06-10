@@ -79,6 +79,4 @@ function VirtualizedBookListComponent({
   );
 }
 
-export const VirtualizedBookList = memo(VirtualizedBookListComponent);
-
-export default VirtualizedBookList;
+export default memo(VirtualizedBookListComponent);

@@ -1,4 +1,4 @@
-export function PerformanceChecklist() {
+function PerformanceChecklist() {
   return (
     <aside className="performance-checklist-card">
       <h3>Buenas prácticas aplicadas</h3>

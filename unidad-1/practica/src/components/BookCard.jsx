@@ -22,6 +22,4 @@ function BookCardComponent({ book, getAuthorName, getCategoryName, onOpenDetails
   );
 }
 
-export const BookCard = memo(BookCardComponent);
-
-export default BookCard;
+export default memo(BookCardComponent);

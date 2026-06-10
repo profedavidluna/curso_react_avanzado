@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
-import { BookList } from './BookList';
+import BookList from './BookList';
 import Header from './Header';
 
-export function LibraryCatalogView({
+function LibraryCatalogView({
   books,
   categories,
   getAuthorName,

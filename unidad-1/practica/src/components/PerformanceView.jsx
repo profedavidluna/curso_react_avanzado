@@ -4,7 +4,7 @@ import PerformanceOverview from './PerformanceOverview';
 import VirtualizedBookList from './VirtualizedBookList';
 import { usePerformanceCatalog } from '../hooks/usePerformanceCatalog';
 
-export function PerformanceView({
+function PerformanceView({
   books,
   categories,
   getAuthorName,

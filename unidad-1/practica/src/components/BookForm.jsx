@@ -1,20 +1,18 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+
+const INITIAL_FORM_STATE = {
+  title: '',
+  authorId: '',
+  categoryId: '',
+  isbn: '',
+  pages: '',
+  year: '',
+  summary: '',
+  coverUrl: '',
+};
 
 export function BookForm({ onSubmit, onCancel, authors, categories }) {
-  const initialFormState = useMemo(
-    () => ({
-      title: '',
-      authorId: '',
-      categoryId: '',
-      isbn: '',
-      pages: '',
-      year: '',
-      summary: '',
-      coverUrl: '',
-    }),
-    [],
-  );
-  const [formData, setFormData] = useState(initialFormState);
+  const [formData, setFormData] = useState(INITIAL_FORM_STATE);
   const [errorMessage, setErrorMessage] = useState('');
 
   const updateField = (field) => (event) => {
@@ -23,7 +21,7 @@ export function BookForm({ onSubmit, onCancel, authors, categories }) {
   };
 
   const resetForm = () => {
-    setFormData(initialFormState);
+    setFormData(INITIAL_FORM_STATE);
     setErrorMessage('');
   };
 
@@ -34,15 +32,21 @@ export function BookForm({ onSubmit, onCancel, authors, categories }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const normalizedAuthorId = formData.authorId.trim();
+    const normalizedCategoryId = formData.categoryId.trim();
 
-    if (!formData.title.trim() || !formData.authorId || !formData.categoryId) {
+    if (!formData.title.trim() || !normalizedAuthorId || !normalizedCategoryId) {
       setErrorMessage('Complete título, autor y categoría antes de guardar.');
       return;
     }
 
-    const wasCreated = onSubmit(formData);
+    const submitSucceeded = onSubmit({
+      ...formData,
+      authorId: normalizedAuthorId,
+      categoryId: normalizedCategoryId,
+    });
 
-    if (wasCreated !== false) {
+    if (submitSucceeded) {
       resetForm();
     }
   };

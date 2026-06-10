@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+// 240 copias generan un dataset suficientemente grande para notar el valor de la virtualización
+// sin volver la demo incómoda durante clase o revisión manual.
 const BOOK_MULTIPLIER = 240;
 
 export function usePerformanceCatalog({ books, searchQuery, selectedCategoryFilter, sortBy }) {
@@ -7,7 +9,7 @@ export function usePerformanceCatalog({ books, searchQuery, selectedCategoryFilt
     return Array.from({ length: BOOK_MULTIPLIER }, (_, copyIndex) =>
       books.map((book) => ({
         ...book,
-        id: `${book.id}-${copyIndex + 1}`,
+        id: `${book.id}__copy__${copyIndex + 1}`,
         inventoryCode: `BK-${String(copyIndex + 1).padStart(3, '0')}-${book.id.toUpperCase()}`,
       })),
     ).flat();
@@ -54,5 +56,3 @@ export function usePerformanceCatalog({ books, searchQuery, selectedCategoryFilt
     stats,
   };
 }
-
-export default usePerformanceCatalog;

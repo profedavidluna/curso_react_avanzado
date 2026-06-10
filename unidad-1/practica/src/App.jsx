@@ -8,6 +8,17 @@ import Modal from './components/Modal';
 import PerformanceView from './components/PerformanceView';
 import Sidebar from './components/Sidebar';
 
+function getNextBookNumericId(baseBooks) {
+  // La app usa IDs del tipo `b{n}` en su dataset base; si aparece otro formato,
+  // simplemente no participa en el cálculo incremental y se conserva el máximo válido.
+  const maxId = baseBooks.reduce((currentMax, book) => {
+    const numericId = Number.parseInt(book.id.replace(/^b/, ''), 10);
+    return Number.isNaN(numericId) ? currentMax : Math.max(currentMax, numericId);
+  }, 0);
+
+  return maxId + 1;
+}
+
 function App() {
   const [currentView, setCurrentView] = useState('books');
   const [books, setBooks] = useState([]);
@@ -18,14 +29,14 @@ function App() {
   const [selectedBookForDetail, setSelectedBookForDetail] = useState(null);
   const [activeDetailTab, setActiveDetailTab] = useState('info');
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
-  const nextBookIdRef = useRef(initialBooks.length + 1);
+  const nextBookIdRef = useRef(getNextBookNumericId(initialBooks));
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setBooks(initialBooks);
       setAuthors(initialAuthors);
       setCategories(initialCategories);
-      nextBookIdRef.current = initialBooks.length + 1;
+      nextBookIdRef.current = getNextBookNumericId(initialBooks);
       setIsLoading(false);
     }, 800);
 

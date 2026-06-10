@@ -8,6 +8,15 @@ import CategoryList from './components/CategoryList';
 import Modal from './components/Modal';
 import BookForm from './components/BookForm';
 
+function getNextBookNumericId(baseBooks) {
+  const maxId = baseBooks.reduce((currentMax, book) => {
+    const numericId = Number.parseInt(book.id.replace(/^b/, ''), 10);
+    return Number.isNaN(numericId) ? currentMax : Math.max(currentMax, numericId);
+  }, 0);
+
+  return maxId + 1;
+}
+
 function App() {
   // --- ESTADOS GLOBALES DE LA APP (MONOLITO) ---
   const [currentView, setCurrentView] = useState('books'); // 'books', 'authors', 'categories'
@@ -26,7 +35,7 @@ function App() {
   const [activeDetailTab, setActiveDetailTab] = useState('info'); // 'info', 'reviews', 'loans'
 
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
-  const nextBookIdRef = useRef(initialBooks.length + 1);
+  const nextBookIdRef = useRef(getNextBookNumericId(initialBooks));
 
   // --- ESTADOS CONTROLADOS DEL FORMULARIO DE CREACIÓN DE LIBROS (Ineficiente, re-renderiza toda la App en cada pulsación) ---
   const [formTitle, setFormTitle] = useState('');
@@ -44,7 +53,7 @@ function App() {
       setBooks(initialBooks);
       setAuthors(initialAuthors);
       setCategories(initialCategories);
-      nextBookIdRef.current = initialBooks.length + 1;
+      nextBookIdRef.current = getNextBookNumericId(initialBooks);
       setIsLoading(false);
     }, 800);
     return () => clearTimeout(timer);

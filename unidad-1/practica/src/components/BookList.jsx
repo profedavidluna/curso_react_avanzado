@@ -27,6 +27,4 @@ function BookListComponent({ filteredBooks, getAuthorName, getCategoryName, onOp
   );
 }
 
-export const BookList = memo(BookListComponent);
-
-export default BookList;
+export default memo(BookListComponent);

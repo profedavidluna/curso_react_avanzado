@@ -22,6 +22,4 @@ function PerformanceOverviewComponent({ stats }) {
   );
 }
 
-export const PerformanceOverview = memo(PerformanceOverviewComponent);
-
-export default PerformanceOverview;
+export default memo(PerformanceOverviewComponent);
