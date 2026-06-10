@@ -117,6 +117,30 @@ Un feed de 5 000 incidencias con filtros y orden necesita ser fluido sin sacrifi
 
 ---
 
+## Caso transversal – Estrategias avanzadas de rendimiento sobre la app de biblioteca
+
+### Problema
+La aplicación base de la unidad 1 concentra demasiado estado en `App`, filtra el catálogo en cada render y no está preparada para mostrar un volumen alto de libros sin degradar la interfaz.
+
+### Objetivos
+- reutilizar la app existente en lugar de crear un ejemplo aislado,
+- enseñar virtualización con un catálogo grande pero realista,
+- mostrar segmentación de componentes pesados a partir del propio árbol de la app,
+- aplicar buenas prácticas de performance sobre un caso cercano a producción.
+
+### Solución propuesta
+Se mantiene la app de biblioteca y se añade una vista `⚡ Performance`. Allí el catálogo se amplía en memoria para simular cientos de copias, se virtualiza el listado y se acompaña con un resumen y un checklist de buenas prácticas. Además, la vista principal de libros se segmenta en `LibraryCatalogView` y el formulario deja de vivir en `App` para reducir el radio de render.
+
+### Valor empresarial
+- se enseña performance sobre una interfaz conocida por el alumno,
+- el mismo caso permite discutir diagnóstico, trade-offs y refactor incremental,
+- los cambios son reutilizables en otros módulos del curso.
+
+### Ruta del código
+`unidad-1/practica/src`
+
+---
+
 ## Nivel avanzado – Performance + testing + mejora continua
 
 ### Problema

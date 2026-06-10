@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function Sidebar({ currentView, setCurrentView }) {
   return (
     <div className="sidebar-container">
@@ -22,6 +20,12 @@ export function Sidebar({ currentView, setCurrentView }) {
           onClick={() => setCurrentView('categories')}
         >
           🏷️ Categorías
+        </li>
+        <li
+          className={`sidebar-item ${currentView === 'performance' ? 'sidebar-item-active' : ''}`}
+          onClick={() => setCurrentView('performance')}
+        >
+          ⚡ Performance
         </li>
       </ul>
     </div>

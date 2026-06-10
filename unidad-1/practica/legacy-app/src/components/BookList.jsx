@@ -1,4 +1,3 @@
-import React from 'react';
 import BookCard from './BookCard';
 
 export function BookList({ filteredBooks, getAuthorName, getCategoryName, onOpenDetails }) {

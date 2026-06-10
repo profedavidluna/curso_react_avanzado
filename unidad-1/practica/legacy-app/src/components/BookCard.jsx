@@ -1,4 +1,3 @@
-import React from 'react';
 
 export function BookCard({ book, getAuthorName, getCategoryName, onOpenDetails }) {
   return (

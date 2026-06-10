@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function Header({ 
   currentView, 
   searchQuery, 
@@ -16,6 +14,7 @@ export function Header({
           {currentView === 'books' && 'Catálogo de Libros'}
           {currentView === 'authors' && 'Directorio de Autores'}
           {currentView === 'categories' && 'Categorías Literarias'}
+          {currentView === 'performance' && 'Laboratorio de Performance'}
         </h1>
         <p style={{ color: '#94a3b8', fontSize: '14px', marginTop: '5px' }}>
           Gestión Avanzada del Sistema de Biblioteca

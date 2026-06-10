@@ -1,38 +1,69 @@
-import React from 'react';
+import { useMemo, useState } from 'react';
 
-export function BookForm({
-  onSubmit,
-  onCancel,
-  authors,
-  categories,
-  formTitle,
-  setFormTitle,
-  formAuthorId,
-  setFormAuthorId,
-  formCategoryId,
-  setFormCategoryId,
-  formIsbn,
-  setFormIsbn,
-  formPages,
-  setFormPages,
-  formYear,
-  setFormYear,
-  formSummary,
-  setFormSummary,
-  formCoverUrl,
-  setFormCoverUrl
-}) {
+export function BookForm({ onSubmit, onCancel, authors, categories }) {
+  const initialFormState = useMemo(
+    () => ({
+      title: '',
+      authorId: '',
+      categoryId: '',
+      isbn: '',
+      pages: '',
+      year: '',
+      summary: '',
+      coverUrl: '',
+    }),
+    [],
+  );
+  const [formData, setFormData] = useState(initialFormState);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const updateField = (field) => (event) => {
+    const value = event.target.value;
+    setFormData((previous) => ({ ...previous, [field]: value }));
+  };
+
+  const resetForm = () => {
+    setFormData(initialFormState);
+    setErrorMessage('');
+  };
+
+  const handleCancel = () => {
+    resetForm();
+    onCancel();
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!formData.title.trim() || !formData.authorId || !formData.categoryId) {
+      setErrorMessage('Complete título, autor y categoría antes de guardar.');
+      return;
+    }
+
+    const wasCreated = onSubmit(formData);
+
+    if (wasCreated !== false) {
+      resetForm();
+    }
+  };
+
   return (
-    <form onSubmit={onSubmit}>
-      
+    <form onSubmit={handleSubmit}>
+      <div className="segmentation-hint">
+        El estado del formulario vive dentro del modal: escribir aquí ya no re-renderiza toda la
+        aplicación.
+      </div>
+
+      {errorMessage && <div className="empty-data-alert">{errorMessage}</div>}
+
       <div className="form-input-group">
         <label className="form-label-title">Título del Libro *</label>
         <input 
           type="text" 
           className="form-input-text" 
           placeholder="Ej. Cien años de soledad" 
-          value={formTitle}
-          onChange={(e) => setFormTitle(e.target.value)}
+          value={formData.title}
+          onChange={updateField('title')}
         />
       </div>
 
@@ -40,8 +71,8 @@ export function BookForm({
         <label className="form-label-title">Autor *</label>
         <select 
           className="form-select-box"
-          value={formAuthorId}
-          onChange={(e) => setFormAuthorId(e.target.value)}
+          value={formData.authorId}
+          onChange={updateField('authorId')}
         >
           <option value="">Seleccione un autor...</option>
           {authors.map(a => (
@@ -54,8 +85,8 @@ export function BookForm({
         <label className="form-label-title">Categoría *</label>
         <select 
           className="form-select-box"
-          value={formCategoryId}
-          onChange={(e) => setFormCategoryId(e.target.value)}
+          value={formData.categoryId}
+          onChange={updateField('categoryId')}
         >
           <option value="">Seleccione una categoría...</option>
           {categories.map(c => (
@@ -71,8 +102,8 @@ export function BookForm({
             type="text" 
             className="form-input-text" 
             placeholder="Ej. 978-3-16..." 
-            value={formIsbn}
-            onChange={(e) => setFormIsbn(e.target.value)}
+            value={formData.isbn}
+            onChange={updateField('isbn')}
           />
         </div>
         <div className="form-input-group">
@@ -81,8 +112,8 @@ export function BookForm({
             type="number" 
             className="form-input-text" 
             placeholder="Ej. 350" 
-            value={formPages}
-            onChange={(e) => setFormPages(e.target.value)}
+            value={formData.pages}
+            onChange={updateField('pages')}
           />
         </div>
         <div className="form-input-group">
@@ -91,8 +122,8 @@ export function BookForm({
             type="number" 
             className="form-input-text" 
             placeholder="Ej. 2026" 
-            value={formYear}
-            onChange={(e) => setFormYear(e.target.value)}
+            value={formData.year}
+            onChange={updateField('year')}
           />
         </div>
       </div>
@@ -103,8 +134,8 @@ export function BookForm({
           type="text" 
           className="form-input-text" 
           placeholder="https://ejemplo.com/portada.jpg" 
-          value={formCoverUrl}
-          onChange={(e) => setFormCoverUrl(e.target.value)}
+          value={formData.coverUrl}
+          onChange={updateField('coverUrl')}
         />
       </div>
 
@@ -114,8 +145,8 @@ export function BookForm({
           rows="3" 
           className="form-textarea-field" 
           placeholder="Escribe una breve sinopsis..." 
-          value={formSummary}
-          onChange={(e) => setFormSummary(e.target.value)}
+          value={formData.summary}
+          onChange={updateField('summary')}
         />
       </div>
 
@@ -123,7 +154,7 @@ export function BookForm({
         <button 
           type="button" 
           className="form-cancel-btn" 
-          onClick={onCancel}
+          onClick={handleCancel}
         >
           Cancelar
         </button>

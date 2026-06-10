@@ -1,4 +1,3 @@
-import React from 'react';
 
 export function Sidebar({ currentView, setCurrentView }) {
   return (

@@ -89,10 +89,26 @@
 
 **Criterios de éxito**
 - los nodos en DOM son constantes al filtrar y ordenar,
-- el contador de renders de `IncidentFeed` no sube mientras el usuario escribe y la lista filtrada no cambia,
+- el contador de renders del feed deja de crecer por cambios no relacionados,
 - cada optimización está justificada con un criterio medible.
 
-### Ejercicio 8 – Testing y refactorización continua
+### Ejercicio 8 – Aplicar 3.3 en la app de biblioteca
+**Objetivo:** reutilizar `unidad-1/practica/src` para aplicar 3.3 sobre una aplicación existente.
+
+**Punto de partida:** `unidad-1/practica/src/App.jsx`
+
+**Requisitos**
+- mover el filtrado del catálogo fuera de `App` y dejarlo en una vista enfocada,
+- crear una vista `⚡ Performance` sobre el mismo dominio de libros,
+- virtualizar un catálogo expandido usando una ventana visible y overscan,
+- acompañar la implementación con un checklist de buenas prácticas.
+
+**Criterios de éxito**
+- `App` solo coordina vistas, datos base y modales,
+- la vista de performance renderiza pocas tarjetas aunque el dataset sea grande,
+- el alumno puede señalar dónde vive cada optimización y por qué existe.
+
+### Ejercicio 9 – Testing y refactorización continua
 **Objetivo:** cubrir un componente, un hook y un flujo de usuario antes de refactorizar.
 
 **Entregable**

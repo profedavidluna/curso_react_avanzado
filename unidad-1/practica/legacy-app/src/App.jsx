@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { initialBooks, initialAuthors, initialCategories } from './mockData';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -26,6 +26,7 @@ function App() {
   const [activeDetailTab, setActiveDetailTab] = useState('info'); // 'info', 'reviews', 'loans'
 
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
+  const nextBookIdRef = useRef(initialBooks.length + 1);
 
   // --- ESTADOS CONTROLADOS DEL FORMULARIO DE CREACIÓN DE LIBROS (Ineficiente, re-renderiza toda la App en cada pulsación) ---
   const [formTitle, setFormTitle] = useState('');
@@ -43,6 +44,7 @@ function App() {
       setBooks(initialBooks);
       setAuthors(initialAuthors);
       setCategories(initialCategories);
+      nextBookIdRef.current = initialBooks.length + 1;
       setIsLoading(false);
     }, 800);
     return () => clearTimeout(timer);
@@ -66,7 +68,7 @@ function App() {
     }
 
     const newBook = {
-      id: `b${Date.now()}`,
+      id: `b${nextBookIdRef.current}`,
       title: formTitle,
       authorId: formAuthorId,
       categoryId: formCategoryId,
@@ -79,6 +81,7 @@ function App() {
       loans: []
     };
 
+    nextBookIdRef.current += 1;
     setBooks([newBook, ...books]);
     resetBookForm();
     setIsAddBookModalOpen(false);
@@ -133,7 +136,7 @@ function App() {
           selectedCategoryFilter={selectedCategoryFilter}
           setSelectedCategoryFilter={setSelectedCategoryFilter}
           categories={categories}
-          onAddBookClick={() => setIsAddBookOpen(true)}
+          onAddBookClick={() => setIsAddBookModalOpen(true)}
         />
 
         {/* --- VISTA DE CARGA --- */}

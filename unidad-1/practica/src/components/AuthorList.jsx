@@ -1,4 +1,3 @@
-import React from 'react';
 import AuthorCard from './AuthorCard';
 
 export function AuthorList({ authors }) {

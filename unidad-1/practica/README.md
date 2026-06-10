@@ -1,16 +1,30 @@
-# React + Vite
+# Práctica – app de biblioteca
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Esta aplicación sirve como caso base para las unidades del curso. En esta rama se reutiliza la
+misma app para explicar el punto **3.3 Estrategias avanzadas de rendimiento** sin abandonar el
+dominio del catálogo de libros.
 
-Currently, two official plugins are available:
+## Qué incluye esta versión
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Virtualización de listas:** vista `⚡ Performance` con un catálogo expandido y render
+  únicamente de la ventana visible.
+- **Componentes pesados y segmentación:** `App` deja de concentrar filtros y formulario; esas
+  responsabilidades viven en `LibraryCatalogView`, `PerformanceView` y `BookForm`.
+- **Buenas prácticas de performance:** `useMemo`, `useCallback`, `React.memo` y estado local cerca
+  de donde se usa, más contadores de render para comparar el impacto.
 
-## React Compiler
+## Dónde mirar
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `/src/App.jsx` — shell principal y coordinación mínima.
+- `/src/components/LibraryCatalogView.jsx` — catálogo segmentado con filtros locales.
+- `/src/components/PerformanceView.jsx` — laboratorio del punto 3.3.
+- `/src/components/VirtualizedBookList.jsx` — ejemplo práctico de virtualización.
+- `/src/hooks/usePerformanceCatalog.js` — filtrado, orden y dataset grande memorizado.
 
-## Expanding the ESLint configuration
+## Validación
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm ci
+npm run lint
+npm run build
+```

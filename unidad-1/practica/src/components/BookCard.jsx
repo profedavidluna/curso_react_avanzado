@@ -1,6 +1,6 @@
-import React from 'react';
+import { memo } from 'react';
 
-export function BookCard({ book, getAuthorName, getCategoryName, onOpenDetails }) {
+function BookCardComponent({ book, getAuthorName, getCategoryName, onOpenDetails }) {
   return (
     <div className="book-card-item">
       <div className="book-card-image-wrapper">
@@ -21,5 +21,7 @@ export function BookCard({ book, getAuthorName, getCategoryName, onOpenDetails }
     </div>
   );
 }
+
+export const BookCard = memo(BookCardComponent);
 
 export default BookCard;
