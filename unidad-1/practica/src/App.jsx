@@ -1,4 +1,25 @@
-import React, { useState, useEffect } from 'react';
+// =====================================================================
+// BUENAS PRÁCTICAS: useCallback en el componente raíz
+//
+// PROBLEMA ORIGINAL (legacy):
+//   • 8 variables de estado controlaban el formulario → re-render de
+//     toda la App en cada pulsación de tecla.
+//   • getAuthorName, getCategoryName y openBookDetails se redefinían
+//     en cada render → React.memo en BookCard no podía optimizar nada
+//     porque siempre recibía funciones "nuevas".
+//   • setSearchQuery se pasaba directamente → el filtro se recalculaba
+//     en cada tecla, sin ninguna protección de rendimiento.
+//   • Bug: onAddBookClick llamaba a setIsAddBookOpen (función inexistente).
+//
+// SOLUCIONES aplicadas:
+//   ✅ useRef Ejemplos 1 y 2 → en BookForm.jsx
+//   ✅ useCallback Ejemplo 1 → getAuthorName, getCategoryName, openBookDetails
+//   ✅ useCallback Ejemplo 2 → handleSearchChange (se combina con debounce en Header)
+//   ✅ React.memo            → BookCard y BookList
+//   ✅ Bug fix               → setIsAddBookModalOpen (nombre correcto)
+// =====================================================================
+
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { initialBooks, initialAuthors, initialCategories } from './mockData';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -9,8 +30,8 @@ import Modal from './components/Modal';
 import BookForm from './components/BookForm';
 
 function App() {
-  // --- ESTADOS GLOBALES DE LA APP (MONOLITO) ---
-  const [currentView, setCurrentView] = useState('books'); // 'books', 'authors', 'categories'
+  // --- ESTADOS GLOBALES ---
+  const [currentView, setCurrentView] = useState('books');
   const [books, setBooks] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -23,19 +44,11 @@ function App() {
   // --- ESTADOS DE MODALES ---
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedBookForDetail, setSelectedBookForDetail] = useState(null);
-  const [activeDetailTab, setActiveDetailTab] = useState('info'); // 'info', 'reviews', 'loans'
-
+  const [activeDetailTab, setActiveDetailTab] = useState('info');
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
 
-  // --- ESTADOS CONTROLADOS DEL FORMULARIO DE CREACIÓN DE LIBROS (Ineficiente, re-renderiza toda la App en cada pulsación) ---
-  const [formTitle, setFormTitle] = useState('');
-  const [formAuthorId, setFormAuthorId] = useState('');
-  const [formCategoryId, setFormCategoryId] = useState('');
-  const [formIsbn, setFormIsbn] = useState('');
-  const [formPages, setFormPages] = useState('');
-  const [formYear, setFormYear] = useState('');
-  const [formSummary, setFormSummary] = useState('');
-  const [formCoverUrl, setFormCoverUrl] = useState('');
+  // ✅ ELIMINADOS: los 8 estados de formulario controlado.
+  //    Ahora BookForm gestiona sus propios valores con useRef internamente.
 
   // Simulación de carga de datos iniciales
   useEffect(() => {
@@ -48,104 +61,102 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // --- LÓGICA DE FILTRADO DIRECTA EN RENDER (Re-calculado en cada render de la App) ---
-  const filteredBooks = books.filter(book => {
-    const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          book.isbn.includes(searchQuery);
-    const matchesCategory = selectedCategoryFilter === '' || book.categoryId === selectedCategoryFilter;
+  // useMemo: el filtrado solo se recalcula cuando books, searchQuery o
+  // selectedCategoryFilter cambian, no en cada render de App.
+  const filteredBooks = useMemo(() => books.filter(book => {
+    const matchesSearch =
+      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.isbn.includes(searchQuery);
+    const matchesCategory =
+      selectedCategoryFilter === '' || book.categoryId === selectedCategoryFilter;
     return matchesSearch && matchesCategory;
-  });
+  }), [books, searchQuery, selectedCategoryFilter]);
 
-  // Manejo de la creación del libro
-  const handleCreateBookSubmit = (e) => {
-    e.preventDefault();
-    
-    if (!formTitle || !formAuthorId || !formCategoryId) {
-      alert('Por favor, rellene los campos obligatorios (Título, Autor y Categoría)');
-      return;
-    }
+  // ---------------------------------------------------------------
+  // useCallback EJEMPLO 1 – Estabilizar funciones de lookup
+  //
+  // Sin useCallback: en cada render de App se crea una nueva referencia
+  // de getAuthorName y getCategoryName → BookCard (aunque use React.memo)
+  // se re-renderiza porque recibe "props nuevas".
+  //
+  // Con useCallback + deps: la misma referencia se reutiliza mientras
+  // authors/categories no cambien → React.memo en BookCard puede optimizar.
+  // ---------------------------------------------------------------
+  const getAuthorName = useCallback((authorId) => {
+    const author = authors.find(a => a.id === authorId);
+    return author ? author.name : 'Autor Desconocido';
+  }, [authors]); // ← se recrea solo cuando cambia el array de autores
 
-    const newBook = {
-      id: `b${Date.now()}`,
-      title: formTitle,
-      authorId: formAuthorId,
-      categoryId: formCategoryId,
-      isbn: formIsbn || "N/A",
-      pages: parseInt(formPages) || 0,
-      year: parseInt(formYear) || new Date().getFullYear(),
-      summary: formSummary || "Sin resumen disponible.",
-      coverUrl: formCoverUrl || "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80",
-      reviews: [],
-      loans: []
-    };
+  const getCategoryName = useCallback((catId) => {
+    const category = categories.find(c => c.id === catId);
+    return category ? category.name : 'Sin Categoría';
+  }, [categories]); // ← se recrea solo cuando cambia el array de categorías
 
-    setBooks([newBook, ...books]);
-    resetBookForm();
-    setIsAddBookModalOpen(false);
-  };
-
-  const resetBookForm = () => {
-    setFormTitle('');
-    setFormAuthorId('');
-    setFormCategoryId('');
-    setFormIsbn('');
-    setFormPages('');
-    setFormYear('');
-    setFormSummary('');
-    setFormCoverUrl('');
-  };
-
-  // Abrir Modal de Detalle
-  const openBookDetails = (book) => {
+  // openBookDetails solo usa setters de useState, que son estables ([] de deps)
+  const openBookDetails = useCallback((book) => {
     setSelectedBookForDetail(book);
     setActiveDetailTab('info');
     setIsDetailModalOpen(true);
-  };
+  }, []); // los setters de useState son estables: no necesitamos deps
 
-  // Obtener nombre del autor por ID
-  const getAuthorName = (authorId) => {
-    const author = authors.find(a => a.id === authorId);
-    return author ? author.name : 'Autor Desconocido';
-  };
+  // ---------------------------------------------------------------
+  // useCallback EJEMPLO 2 – Handler estable para el buscador
+  //
+  // handleSearchChange actualiza searchQuery. Al envolverlo en useCallback
+  // con [] de deps, la referencia es SIEMPRE la misma entre renders.
+  // Header.jsx usará esta referencia estable como dependencia de su propio
+  // useCallback de debounce → cadena completa de estabilidad.
+  // ---------------------------------------------------------------
+  const handleSearchChange = useCallback((value) => {
+    setSearchQuery(value);
+  }, []); // setSearchQuery es estable → deps vacías
 
-  // Obtener categoría por ID
-  const getCategoryName = (catId) => {
-    const category = categories.find(c => c.id === catId);
-    return category ? category.name : 'Sin Categoría';
-  };
+  // ✅ handleCreateBookSubmit ahora recibe el objeto del form (desde BookForm con refs)
+  //    en lugar de leer 8 variables de estado.
+  const handleCreateBookSubmit = useCallback((bookData) => {
+    const newBook = {
+      id: `b${Date.now()}`,
+      ...bookData,
+      reviews: [],
+      loans: [],
+    };
+    setBooks(prev => [newBook, ...prev]);
+    setIsAddBookModalOpen(false);
+  }, []); // solo usa setters estables
 
   return (
     <div>
-      {/* --- SIDEBAR LATERAL (PROP DRILLING) --- */}
-      <Sidebar 
-        currentView={currentView} 
-        setCurrentView={setCurrentView} 
+      {/* --- SIDEBAR LATERAL --- */}
+      <Sidebar
+        currentView={currentView}
+        setCurrentView={setCurrentView}
       />
 
       {/* --- CONTENIDO PRINCIPAL --- */}
       <div className="main-wrapper">
-        
-        {/* --- CABECERA DE LA PÁGINA (PROP DRILLING DEL BUSCADOR ACOPLADO) --- */}
-        <Header 
+
+        {/* ✅ onSearchChange en lugar de searchQuery + setSearchQuery
+               Header gestiona el debounce internamente (ver Header.jsx) */}
+        <Header
           currentView={currentView}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
+          onSearchChange={handleSearchChange}
           selectedCategoryFilter={selectedCategoryFilter}
           setSelectedCategoryFilter={setSelectedCategoryFilter}
           categories={categories}
-          onAddBookClick={() => setIsAddBookOpen(true)}
+          onAddBookClick={() => setIsAddBookModalOpen(true)} // ✅ bug fix
         />
 
-        {/* --- VISTA DE CARGA --- */}
         {isLoading ? (
           <div style={{ textAlign: 'center', padding: '100px', fontSize: '18px', color: '#94a3b8' }}>
             Cargando datos del sistema...
           </div>
         ) : (
           <>
-            {/* --- SECCIÓN 1: VISTA DE LIBROS (PROP DRILLING) --- */}
             {currentView === 'books' && (
-              <BookList 
+              /* ✅ getAuthorName, getCategoryName y openBookDetails son referencias
+                    estables gracias a useCallback → BookList y BookCard (React.memo)
+                    NO se re-renderizarán al cambiar otros estados de App */
+              <BookList
                 filteredBooks={filteredBooks}
                 getAuthorName={getAuthorName}
                 getCategoryName={getCategoryName}
@@ -153,12 +164,10 @@ function App() {
               />
             )}
 
-            {/* --- SECCIÓN 2: VISTA DE AUTORES (PROP DRILLING) --- */}
             {currentView === 'authors' && (
               <AuthorList authors={authors} />
             )}
 
-            {/* --- SECCIÓN 3: VISTA DE CATEGORÍAS (PROP DRILLING) --- */}
             {currentView === 'categories' && (
               <CategoryList categories={categories} />
             )}
@@ -166,10 +175,8 @@ function App() {
         )}
       </div>
 
-      {/* =======================================================
-          MODAL DE DETALLES DEL LIBRO (PROP DRILLING MASSIVE & RIGID)
-          ======================================================= */}
-      <Modal 
+      {/* --- MODAL DE DETALLES DEL LIBRO --- */}
+      <Modal
         isOpen={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}
         book={selectedBookForDetail}
@@ -179,43 +186,26 @@ function App() {
         setActiveDetailTab={setActiveDetailTab}
       />
 
-      {/* =======================================================
-          MODAL CON FORMULARIO DE NUEVO LIBRO (PROP DRILLING BRUTAL)
-          ======================================================= */}
+      {/* --- MODAL CON FORMULARIO DE NUEVO LIBRO --- */}
       {isAddBookModalOpen && (
         <div className="modal-overlay-bg" onClick={() => setIsAddBookModalOpen(false)}>
           <div className="modal-content-box" onClick={(e) => e.stopPropagation()}>
-            
+
             <div className="modal-header-section">
               <h2 className="modal-title-text">Registrar Nuevo Libro</h2>
               <button className="modal-close-icon" onClick={() => setIsAddBookModalOpen(false)}>×</button>
             </div>
 
             <div className="modal-body-section">
-              <BookForm 
+              {/* ✅ BookForm ya no recibe 16 props de estado controlado.
+                     Solo onSubmit, onCancel, authors y categories.
+                     El auto-focus y la recogida de datos con refs es
+                     responsabilidad del propio BookForm. */}
+              <BookForm
                 onSubmit={handleCreateBookSubmit}
-                onCancel={() => {
-                  resetBookForm();
-                  setIsAddBookModalOpen(false);
-                }}
+                onCancel={() => setIsAddBookModalOpen(false)}
                 authors={authors}
                 categories={categories}
-                formTitle={formTitle}
-                setFormTitle={setFormTitle}
-                formAuthorId={formAuthorId}
-                setFormAuthorId={setFormAuthorId}
-                formCategoryId={formCategoryId}
-                setFormCategoryId={setFormCategoryId}
-                formIsbn={formIsbn}
-                setFormIsbn={setFormIsbn}
-                formPages={formPages}
-                setFormPages={setFormPages}
-                formYear={formYear}
-                setFormYear={setFormYear}
-                formSummary={formSummary}
-                setFormSummary={setFormSummary}
-                formCoverUrl={formCoverUrl}
-                setFormCoverUrl={setFormCoverUrl}
               />
             </div>
 
